@@ -1,0 +1,28 @@
+{
+  "name": "foodz-backend",
+  "version": "1.0.0",
+  "description": "API Rest para FoodZ",
+  "keywords": [
+    "api",
+    "node",
+    "express",
+    "bcrypt",
+    "mongoose",
+    "jwt"
+  ],
+  "homepage": "https://github.com/BIT-202507/foodz-backend#readme",
+  "bugs": {
+    "url": "https://github.com/BIT-202507/foodz-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BIT-202507/foodz-backend.git"
+  },
+  "license": "ISC",
+  "author": "Juan Carlos Jiménez Gutiérrez <jangojes.dev@gmail.com>",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
