@@ -20,10 +20,14 @@
   },
   "license": "ISC",
   "author": "Juan Carlos Jiménez Gutiérrez <jangojes.dev@gmail.com>",
+  "contributors": [
+    "Nilson Lopez <nilson.lopez@gmail.com>",
+    "Felipe Cardenas <felipecas097@gmail.com>"
+  ],
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch index.js"
+    "dev": "node --watch ./src/index.js"
   },
   "dependencies": {
     "express": "^5.1.0"
