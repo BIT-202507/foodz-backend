@@ -5,13 +5,23 @@ const router = express.Router();
 
 // Definicion de las rutas (EndPoints)
 router.get( '/', ( req, res ) => {
-    // lista en una constante
-    const users = [
-        { name: 'Ramiro', age: 23 },
-        { name: 'Sofanor', age: 48 },
-    ];
+    res.json({ msg: 'Obtiene todos los usuarios' });
+} );
 
-    res.json( users );
+router.post( '/', ( req, res ) => {
+    res.json({ msg: 'Crear un usuario' });
+} );
+
+router.put( '/', ( req, res ) => {
+    res.json({ msg: 'Actualiza todos las propiedades del usuario' });
+} );
+
+router.patch( '/', ( req, res ) => {
+    res.json({ msg: 'Actualiza parcialmente 1 o todas las propiedades del usuario' });
+} );
+
+router.delete( '/', ( req, res ) => {
+    res.json({ msg: 'Elimina un usuario' });
 } );
 
 

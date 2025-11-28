@@ -1,7 +1,10 @@
 const express = require( 'express' );   // Importacion
+const dbConnection = require( './config/mongo.config.js' );
 
 const app = express();                  // Invocando core Express
 const PORT = 3000;                      // Definiendo el puerto de escucha
+
+dbConnection();     // Ejecuta la conexion a la base de datos
 
 app.get( '/health', ( req, res ) => {
     res.json({
