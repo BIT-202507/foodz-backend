@@ -1,5 +1,5 @@
 // Mongoose ODM, ORM
-const mongoose = require( 'mongoose' );
+import mongoose from 'mongoose';
 
 const MONGO_URI = 'mongodb://localhost:27017/db-foodz';
 
@@ -15,5 +15,4 @@ const dbConnection = async () => {
     }
 }
 
-
-module.exports = dbConnection;
+export default dbConnection;

@@ -1,4 +1,4 @@
-const express  = require( 'express' );
+import express from 'express';
 const router = express.Router();
 
 // Definicion de las rutas de productos
@@ -10,4 +10,4 @@ router.get( '/', function( req, res ) {
 } );
 
 
-module.exports = router;
+export default router;
