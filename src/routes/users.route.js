@@ -4,24 +4,18 @@ import express from 'express';
 const router = express.Router();
 
 // Definicion de las rutas (EndPoints)
-router.get( '/', ( req, res ) => {
-    res.json({ msg: 'Obtiene todos los usuarios' });
-} );
-
 router.post( '/', ( req, res ) => {
-    res.json({ msg: 'Crear un usuario' });
-} );
+    const data = req.body;         // Extraer el cuerpo de la peticion
 
-router.put( '/', ( req, res ) => {
-    res.json({ msg: 'Actualiza todos las propiedades del usuario' });
-} );
+    // Mostrar en consola el cuerpo de la peticion
+    console.log( data );           // Imprimir en consola el cuerpo de la peticion
 
-router.patch( '/', ( req, res ) => {
-    res.json({ msg: 'Actualiza parcialmente 1 o todas las propiedades del usuario' });
-} );
-
-router.delete( '/', ( req, res ) => {
-    res.json({ msg: 'Elimina un usuario' });
+    // Responder al cliente
+    res.json({ 
+        msg: 'Crear un usuario',
+        // data: data,             // Forma tradicional   
+        data                       // ECMAScript 2015   
+    });
 } );
 
 

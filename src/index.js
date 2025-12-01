@@ -17,6 +17,8 @@ app.get( '/health', ( req, res ) => {
 } );
 
 // Middlewares Express separar las rutas por entidad
+app.use( express.json() );    // Middleware para parsear JSON
+
 app.use( '/api/v1/users', usersRoute );
 app.use( '/api/v1/products', productsRoute );
 
