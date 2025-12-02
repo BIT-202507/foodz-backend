@@ -1,4 +1,5 @@
-import userModel from "../models/User.model.js";
+// Controlador: Se debe encargar de Recibir las peticiones y responder a ellas
+import { registerUser } from "../services/user.service.js";
 
 const createUser = async ( req, res ) => {
     const data = req.body;         // Extraer el cuerpo de la peticion
@@ -7,8 +8,7 @@ const createUser = async ( req, res ) => {
     console.log( data );           // Imprimir en consola el cuerpo de la peticion
 
     // Registrar los datos usando el userModel
-    const dataRegistered = await userModel.create( data );   // Registrar los datos en la base de datos
-
+    const dataRegistered = await registerUser( data );   // Registrar los datos en la base de datos
 
     // Responder al cliente
     res.json({ 
