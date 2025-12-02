@@ -55,7 +55,7 @@ const userSchema = new Schema({
 
 // Crear el modelo User basado en el esquema userSchema
 const userModel = model(
-    'users',            // Nombre de la coleccion en singular 'User'
+    'user',             // Nombre de la coleccion en singular 'User'
     userSchema          // Esquema asociado al modelo
 ); 
 
