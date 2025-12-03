@@ -1,7 +1,7 @@
 // Importando la dependencia 'express' usando CommonJS
 import { Router } from 'express';       // Desestructurando Router desde express
 
-import { createUser, getAllUsers, getUserById } from '../controllers/user.controller.js';
+import { createUser, deleteUserById, getAllUsers, getUserById } from '../controllers/user.controller.js';
 
 const router = Router();
 
@@ -9,7 +9,7 @@ const router = Router();
 router.post( '/', createUser );
 router.get( '/', getAllUsers );
 router.get( '/:idUser', getUserById );  // Parametrizar la ruta: Crear un parametro en la ruta que funje como variable
-
+router.delete( '/:idUser', deleteUserById );
 
 // Exportando el router usando CommonJS
 export default router;

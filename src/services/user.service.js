@@ -9,11 +9,20 @@ const dbGetAllUser = async () => {
     return await userModel.find();
 }
 
-const dbGetUserById = () => {}
+const dbGetUserById = async ( _id ) => {
+    return await userModel.findById( _id );
+    return await userModel.findOne({ _id });
+}
+
+const dbDeleteUserById = async ( _id ) => {
+    return await userModel.findOneAndDelete({ _id });
+    return await userModel.findByIdAndDelete( _id );
+}
 
 
 export {
     dbRegisterUser,
     dbGetAllUser,
-    dbGetUserById
+    dbGetUserById,
+    dbDeleteUserById
 }
