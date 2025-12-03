@@ -1,5 +1,6 @@
 // Controlador: Se debe encargar de Recibir las peticiones y responder a ellas
-import { registerUser } from "../services/user.service.js";
+import userModel from "../models/User.model.js";
+import { dbGetAllUser, dbRegisterUser } from "../services/user.service.js";
 
 const createUser = async ( req, res ) => {
 
@@ -12,7 +13,7 @@ const createUser = async ( req, res ) => {
         console.log( data );           // Imprimir en consola el cuerpo de la peticion
     
         // Paso 2: Registrar los datos usando el userModel
-        const dataRegistered = await registerUser( data );   // Registrar los datos en la base de datos
+        const dataRegistered = await dbRegisterUser( data );   // Registrar los datos en la base de datos
     
         // Paso 3: Responder al cliente
         res.json({ 
@@ -31,7 +32,26 @@ const createUser = async ( req, res ) => {
 
 }
 
+const getAllUsers = async ( req, res ) => {
+    try {
+        const users = await dbGetAllUser();
+    
+        res.json({
+            msg: 'Obtiene todos los usuarios',
+            users
+        });
+    } 
+    catch (error) {
+        console.error( error );
+        res.json({
+            msg: 'Error: No se pudo obtener el listado de usuarios'
+        });    
+    }
+
+}
+
 
 export {
-    createUser
+    createUser,
+    getAllUsers
 }
