@@ -9,10 +9,11 @@ const dbGetAllUser = async () => {
     return await userModel.find();
 }
 
-
+const dbGetUserById = () => {}
 
 
 export {
     dbRegisterUser,
-    dbGetAllUser
+    dbGetAllUser,
+    dbGetUserById
 }
