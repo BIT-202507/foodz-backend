@@ -1,4 +1,4 @@
-import { dbRegisterUnitTypes } from "../services/unit-types.service.js";
+import { dbGetAllUnitTypes, dbRegisterUnitTypes } from "../services/unit-types.service.js";
 
 const registerUnitTypes = async (req, res) => {
     try {
@@ -15,7 +15,22 @@ const registerUnitTypes = async (req, res) => {
     }
 }
 
+const getAllUnitTypes = async ( req, res ) => {
+    try {
+        const unitTypes = await dbGetAllUnitTypes();
+
+        res.json({ 
+            length: unitTypes.length,
+            unitTypes
+        });
+    } catch (error) {
+        console.error( error );
+        res.status(500).json({msg: 'Error: No se pudo obtener tipos de unidad' });
+    }
+}
+
 
 export {
-    registerUnitTypes
+    registerUnitTypes,
+    getAllUnitTypes
 }
