@@ -1,10 +1,11 @@
-import { dbRegisterTypeUnit } from "../services/unit-types.service.js";
+import { dbRegisterUnitTypes } from "../services/unit-types.service.js";
 
-const registerTypeUnit = async (req, res) => {
+const registerUnitTypes = async (req, res) => {
     try {
         const inputData = req.body;
+        console.log('Request Body:', inputData); // Debugging log
 
-        const typeUnitRegistered = await dbRegisterTypeUnit(inputData);
+        const typeUnitRegistered = await dbRegisterUnitTypes(inputData);
 
         res.json({ typeUnitRegistered });
 
@@ -16,5 +17,5 @@ const registerTypeUnit = async (req, res) => {
 
 
 export {
-    registerTypeUnit
+    registerUnitTypes
 }
