@@ -1,4 +1,4 @@
-import { dbGetAllUnitTypes, dbGetUnitTypeById, dbGetUnitTypeByName, dbRegisterUnitTypes } from "../services/unit-types.service.js";
+import { dbDeleteUnitTypeById, dbDeleteUnitTypeByName, dbGetAllUnitTypes, dbGetUnitTypeById, dbGetUnitTypeByName, dbRegisterUnitTypes } from "../services/unit-types.service.js";
 
 const registerUnitTypes = async (req, res) => {
     try {
@@ -55,9 +55,38 @@ const getUnitTypeByName = async ( req, res ) => {
     }
 }
 
+const deleteUnitTypeById = async ( req, res ) => {
+    try {
+        const id = req.params.id;
+
+        const unitTypeDeleted = await dbDeleteUnitTypeById( id );
+
+        res.json({ unitTypeDeleted });
+    } catch (error) {
+        console.error( error );
+        res.status(500).json({ msg: 'Error: No se pudo eliminar tipo de unidad por ID' });        
+    }
+}
+
+const deleteUnitTypeByName = async ( req, res ) => {
+    try {
+        const name = req.params.name;
+
+        const unitTypeDeleted = await dbDeleteUnitTypeByName( name );
+
+        res.json({ unitTypeDeleted });
+    } catch (error) {
+        console.error( error );
+        res.status(500).json({ msg: 'Error: No se pudo eliminar tipo de unidad por name' });        
+    }
+}
+
+
 export {
     registerUnitTypes,
     getAllUnitTypes,
     getUnitTypeById,
-    getUnitTypeByName
+    getUnitTypeByName,
+    deleteUnitTypeById,
+    deleteUnitTypeByName
 }
