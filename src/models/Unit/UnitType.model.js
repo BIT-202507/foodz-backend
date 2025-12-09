@@ -1,9 +1,11 @@
-import { model, models, Schema } from 'mongoose';
+import mongoose from 'mongoose';
+
+const { model, models, Schema } = mongoose;
 
 const UnitTypeSchema = new Schema({
     name: {
         type: String,
-        enum: [ 'masa', 'volumen', 'culinarias', 'nutricionales' ],
+        enum: ['mass', 'volume', 'culinary', 'nutritional'],
         required: true,
         unique: true
     }
@@ -12,6 +14,6 @@ const UnitTypeSchema = new Schema({
     versionKey: false
 });
 
-const UnitTypeModel = models.UnitType || model( 'UnitType', UnitTypeSchema );
+const UnitTypeModel = models.UnitType || model('UnitType', UnitTypeSchema);
 
 export default UnitTypeModel;
