@@ -15,81 +15,68 @@ const registerUnitTypes = async (req, res) => {
     }
 }
 
-const getAllUnitTypes = async ( req, res ) => {
+const getAllUnitTypes = async (req, res) => {
     try {
-        const unitTypes = await dbGetAllUnitTypes();
+        // Verificar si hay query params (ej: ?name=mass)
+        const { name } = req.query;
+        let unitTypes;
 
-        res.json({ 
+        if (name) {
+            const found = await dbGetUnitTypeByName(name);
+            unitTypes = found ? [found] : [];
+        } else {
+            unitTypes = await dbGetAllUnitTypes();
+        }
+
+        res.json({
             length: unitTypes.length,
             unitTypes
         });
     } catch (error) {
-        console.error( error );
-        res.status(500).json({msg: 'Error: No se pudo obtener tipos de unidad' });
+        console.error(error);
+        res.status(500).json({ msg: 'Error: No se pudo obtener tipos de unidad' });
     }
 }
 
-const getUnitTypeById = async ( req, res ) => {
+const getUnitTypeById = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const unitTypeFound = await dbGetUnitTypeById( id );
+        const unitTypeFound = await dbGetUnitTypeById(id);
 
         res.json({ unitTypeFound });
-    } catch (error) { 
-        console.error( error );
+    } catch (error) {
+        console.error(error);
         res.status(500).json({ msg: 'Error: No se pudo obtener tipo de unidad por ID' });
     }
 }
 
-const getUnitTypeByName = async ( req, res ) => {
-    try {
-        const name = req.params.name;
+// getUnitTypeByName eliminado (integrado en getAllUnitTypes)
 
-        const unitTypeFound = await dbGetUnitTypeByName( name );
-
-        res.json({ unitTypeFound });
-    } catch (error) {
-        console.error( error );
-        res.status(500).json({ msg: 'Error: No se pudo obtener tipo de unidad por nombre' });
-    }
-}
-
-const deleteUnitTypeById = async ( req, res ) => {
+const deleteUnitTypeById = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const unitTypeDeleted = await dbDeleteUnitTypeById( id );
+        const unitTypeDeleted = await dbDeleteUnitTypeById(id);
 
         res.json({ unitTypeDeleted });
     } catch (error) {
-        console.error( error );
-        res.status(500).json({ msg: 'Error: No se pudo eliminar tipo de unidad por ID' });        
+        console.error(error);
+        res.status(500).json({ msg: 'Error: No se pudo eliminar tipo de unidad por ID' });
     }
 }
 
-const deleteUnitTypeByName = async ( req, res ) => {
-    try {
-        const name = req.params.name;
+// deleteUnitTypeByName eliminado (se debe borrar por ID)
 
-        const unitTypeDeleted = await dbDeleteUnitTypeByName( name );
-
-        res.json({ unitTypeDeleted });
-    } catch (error) {
-        console.error( error );
-        res.status(500).json({ msg: 'Error: No se pudo eliminar tipo de unidad por name' });        
-    }
-}
-
-const updateUnitTypeById = async ( req,res ) => {
+const updateUnitTypeById = async (req, res) => {
     try {
         const { body, params: { id } } = req;
 
-        const unitTypeUpdated = await dbUpdateUnitTypeById( id, body );
+        const unitTypeUpdated = await dbUpdateUnitTypeById(id, body);
 
         res.json({ unitTypeUpdated });
     } catch (error) {
-        console.error( error );
+        console.error(error);
         res.status(500).json({ msg: 'Error: No se pudo actualizar el tipo de unidad por ID' });
     }
 }
@@ -99,8 +86,6 @@ export {
     registerUnitTypes,
     getAllUnitTypes,
     getUnitTypeById,
-    getUnitTypeByName,
     deleteUnitTypeById,
-    deleteUnitTypeByName,
     updateUnitTypeById
 }
