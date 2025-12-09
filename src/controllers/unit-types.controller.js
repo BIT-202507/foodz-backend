@@ -1,4 +1,4 @@
-import { dbGetAllUnitTypes, dbRegisterUnitTypes } from "../services/unit-types.service.js";
+import { dbGetAllUnitTypes, dbGetUnitTypeById, dbGetUnitTypeByName, dbRegisterUnitTypes } from "../services/unit-types.service.js";
 
 const registerUnitTypes = async (req, res) => {
     try {
@@ -29,8 +29,35 @@ const getAllUnitTypes = async ( req, res ) => {
     }
 }
 
+const getUnitTypeById = async ( req, res ) => {
+    try {
+        const id = req.params.id;
+
+        const unitTypeFound = await dbGetUnitTypeById( id );
+
+        res.json({ unitTypeFound });
+    } catch (error) { 
+        console.error( error );
+        res.status(500).json({ msg: 'Error: No se pudo obtener tipo de unidad por ID' });
+    }
+}
+
+const getUnitTypeByName = async ( req, res ) => {
+    try {
+        const name = req.params.name;
+
+        const unitTypeFound = await dbGetUnitTypeByName( name );
+
+        res.json({ unitTypeFound });
+    } catch (error) {
+        console.error( error );
+        res.status(500).json({ msg: 'Error: No se pudo obtener tipo de unidad por nombre' });
+    }
+}
 
 export {
     registerUnitTypes,
-    getAllUnitTypes
+    getAllUnitTypes,
+    getUnitTypeById,
+    getUnitTypeByName
 }

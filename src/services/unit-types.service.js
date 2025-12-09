@@ -8,8 +8,18 @@ const dbGetAllUnitTypes = async () => {
     return await UnitTypeModel.find({});
 }
 
+const dbGetUnitTypeById = async ( _id ) => {
+    return await UnitTypeModel.findOne({ _id });
+}
+
+const dbGetUnitTypeByName = async ( name ) => {
+    return await UnitTypeModel.findOne({ name });
+}
+
 
 export {
     dbRegisterUnitTypes,
-    dbGetAllUnitTypes
+    dbGetAllUnitTypes,
+    dbGetUnitTypeById,
+    dbGetUnitTypeByName
 }
