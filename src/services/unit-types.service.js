@@ -24,6 +24,10 @@ const dbDeleteUnitTypeByName = async ( name ) => {
     return await UnitTypeModel.findOneAndDelete({ name });
 }
 
+const dbUpdateUnitTypeById = async ( id, unitTypeUpdated ) => {
+    return await UnitTypeModel.findByIdAndUpdate( id, unitTypeUpdated, { new: true });
+}
+
 
 export {
     dbRegisterUnitTypes,
@@ -31,5 +35,6 @@ export {
     dbGetUnitTypeById,
     dbGetUnitTypeByName,
     dbDeleteUnitTypeById,
-    dbDeleteUnitTypeByName
+    dbDeleteUnitTypeByName,
+    dbUpdateUnitTypeById
 }

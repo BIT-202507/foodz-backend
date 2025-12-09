@@ -1,4 +1,4 @@
-import { dbDeleteUnitTypeById, dbDeleteUnitTypeByName, dbGetAllUnitTypes, dbGetUnitTypeById, dbGetUnitTypeByName, dbRegisterUnitTypes } from "../services/unit-types.service.js";
+import { dbDeleteUnitTypeById, dbDeleteUnitTypeByName, dbGetAllUnitTypes, dbGetUnitTypeById, dbGetUnitTypeByName, dbRegisterUnitTypes, dbUpdateUnitTypeById } from "../services/unit-types.service.js";
 
 const registerUnitTypes = async (req, res) => {
     try {
@@ -81,6 +81,19 @@ const deleteUnitTypeByName = async ( req, res ) => {
     }
 }
 
+const updateUnitTypeById = async ( req,res ) => {
+    try {
+        const { body, params: { id } } = req;
+
+        const unitTypeUpdated = await dbUpdateUnitTypeById( id, body );
+
+        res.json({ unitTypeUpdated });
+    } catch (error) {
+        console.error( error );
+        res.status(500).json({ msg: 'Error: No se pudo actualizar el tipo de unidad por ID' });
+    }
+}
+
 
 export {
     registerUnitTypes,
@@ -88,5 +101,6 @@ export {
     getUnitTypeById,
     getUnitTypeByName,
     deleteUnitTypeById,
-    deleteUnitTypeByName
+    deleteUnitTypeByName,
+    updateUnitTypeById
 }
