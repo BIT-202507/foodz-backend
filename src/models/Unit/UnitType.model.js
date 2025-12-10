@@ -5,9 +5,12 @@ const { model, models, Schema } = mongoose;
 const UnitTypeSchema = new Schema({
     name: {
         type: String,
-        enum: ['mass', 'volume', 'culinary', 'nutritional'],
         required: true,
         unique: true
+    },
+    description: {
+        type: String,
+        trim: true
     }
 }, {
     timestamps: true,
