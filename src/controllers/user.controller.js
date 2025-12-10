@@ -1,3 +1,4 @@
+import { encryptedPassword } from "../helpers/bcrypt.helper.js";
 import { dbGetUserByEmail, dbRegisterUser } from "../services/user.service.js";
 
 const createUser = async ( req, res ) => {
@@ -12,7 +13,10 @@ const createUser = async ( req, res ) => {
         }
 
         // Paso 2: Encriptar la contraseña que envio el usuario
-    
+        console.log( 'inputData antes de encriptar: ', inputData );
+        inputData.password = encryptedPassword( inputData.password );  // Devuelve el password encriptado
+        console.log( 'inputData despues de encriptar: ', inputData );
+
         // Paso 3: Registrar el usuario
         const userRegistered = await dbRegisterUser( inputData );
     
