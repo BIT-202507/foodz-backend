@@ -20,6 +20,9 @@ const createUser = async ( req, res ) => {
         // Paso 3: Registrar el usuario
         const userRegistered = await dbRegisterUser( inputData );
     
+        // TODO Paso 4: Eliminar propiedades con datos sensibles
+
+        // Paso 5: Responder al cliente
         res.json({ userRegistered });
     } catch (error) {
         console.error( error );

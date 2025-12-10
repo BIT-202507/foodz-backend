@@ -16,7 +16,13 @@ const encryptedPassword = ( passwordUser ) => {
 }
 
 // Verificar la contrasenia
-const verifyEncriptedPassword = () => {}
+const verifyEncriptedPassword = ( originalPassword, hashPassword ) => {
+    // Return Boolean
+    return bcrypt.compareSync(
+        originalPassword,       // Password Original (envian en body)
+        hashPassword            // Password Base de Datos (hash password)
+    );
+}
 
 
 export {
