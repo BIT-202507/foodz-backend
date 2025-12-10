@@ -1,6 +1,7 @@
 import express from 'express';
 
 import dbConnection from './config/mongo.config.js';
+import authRoute from './routes/auth.route.js';
 import usersRoute from './routes/users.route.js';
 import unitTypesRoute from './routes/unit-types.route.js';
 import productsRoute from './routes/products.route.js';
@@ -10,9 +11,10 @@ const PORT = 3000;                      // Definiendo el puerto de escucha
 
 import seedUnitTypes from './config/initialSetup.js';
 
+// Ejecuta la conexion a la base de datos y luego el seeding
 dbConnection().then(async () => {
     await seedUnitTypes();
-});     // Ejecuta la conexion a la base de datos y luego el seeding
+});     
 
 app.use(express.json()); // Habilita el parseo de JSON en el body de las peticiones
 
@@ -24,7 +26,8 @@ app.get('/health', (req, res) => {
 });
 
 // Middlewares Express separar las rutas por entidad
-app.use('/api/v1/users', usersRoute);
+app.use( '/api/v1/auth', authRoute );                // Login/Register/RenewToken
+app.use('/api/v1/users', usersRoute);           // CRUD (Users): Autenticado
 app.use('/api/v1/unit-types', unitTypesRoute);
 app.use('/api/v1/products', productsRoute);
 
