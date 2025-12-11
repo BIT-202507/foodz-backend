@@ -26,7 +26,7 @@ app.get('/health', (req, res) => {
 });
 
 // Middlewares Express separar las rutas por entidad
-app.use( '/api/v1/auth', authRoute );                // Login/Register/RenewToken
+app.use( '/api/v1/auth', authRoute );           // Login/Register/RenewToken
 app.use('/api/v1/users', usersRoute);           // CRUD (Users): Autenticado
 app.use('/api/v1/unit-types', unitTypesRoute);
 app.use('/api/v1/products', productsRoute);

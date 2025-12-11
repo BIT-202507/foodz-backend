@@ -1,4 +1,5 @@
 import { verifyEncriptedPassword } from "../helpers/bcrypt.helper.js";
+import { generateToken } from "../helpers/jwt.helper.js";
 import { dbGetUserByEmail } from "../services/user.service.js";
 
 const loginUser = async ( req, res ) => {
@@ -19,14 +20,33 @@ const loginUser = async ( req, res ) => {
     }
 
     // Paso 3: Generar credencial digital (Token)
+    const payload = {
+        name: userFound.name,       // Hola, Fulanito! 
+        email: userFound.email,     // Para realizar comunicaciones (anonimas)
+        role: userFound.role        // Para informar al frontend sobre la autorizacion que tienen los usuarios para acceder a las diferentes interfaces 
+    };
+
+    const token = generateToken( payload );
+
 
     // Paso 4: Eliminar propiedades con datos sensibles
+    //         userFound es un BJSON (JSON Binario)
+    const jsonUserFound = userFound.toObject();     // Convertir un BJSON a JSON
+
+    delete jsonUserFound.password;      // Elimina la propiedad 'password' de un JSON
 
     // Paso 5: Responder al cliente
-    res.json({ msg: 'Usuario logueado! :)' });
+    res.json({ token, user: jsonUserFound });
+}
+
+const reNewToken = ( req, res ) => {
+    // Extrae el payload del objeto requests que hemos asignado desde el Middleware de Autenticacion
+    const payload = req.payload;
+    res.json({ payload });
 }
 
 
 export {
-    loginUser
+    loginUser,
+    reNewToken
 }

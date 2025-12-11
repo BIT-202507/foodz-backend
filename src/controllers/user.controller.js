@@ -20,10 +20,13 @@ const createUser = async ( req, res ) => {
         // Paso 3: Registrar el usuario
         const userRegistered = await dbRegisterUser( inputData );
     
-        // TODO Paso 4: Eliminar propiedades con datos sensibles
+        // Paso 4: Eliminar propiedades con datos sensibles
+        const jsonUserFound = userRegistered.toObject();
+
+        delete jsonUserFound.password;
 
         // Paso 5: Responder al cliente
-        res.json({ userRegistered });
+        res.json({ user: jsonUserFound });
     } catch (error) {
         console.error( error );
         res.json({ msg: 'Error: Al crear usuario' })
