@@ -1,4 +1,4 @@
-import { dbRegisterUnit } from "../services/unit.service.js";
+import { dbGetAllUnits, dbGetUnitById, dbRegisterUnit } from "../services/unit.service.js";
 
 const createUnit = async (req, res) => {
     try {
@@ -13,7 +13,32 @@ const createUnit = async (req, res) => {
     }
 }
 
+const getAllUnits = async (req, res) => {
+    try {
+        const units = await dbGetAllUnits();
+        res.json({ length: units.length, units });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener las unidades' });
+    }
+}
+
+const getUnitById = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const unit = await dbGetUnitById(id);
+
+        res.json({ unit });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener la unidad' });
+    }
+}
+
 
 export {
-    createUnit
+    createUnit,
+    getAllUnits,
+    getUnitById
 }
