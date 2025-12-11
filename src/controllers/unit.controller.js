@@ -1,4 +1,4 @@
-import { dbGetAllUnits, dbGetUnitById, dbRegisterUnit } from "../services/unit.service.js";
+import { dbDeleteUnitById, dbGetAllUnits, dbGetUnitById, dbRegisterUnit } from "../services/unit.service.js";
 
 const createUnit = async (req, res) => {
     try {
@@ -36,9 +36,23 @@ const getUnitById = async (req, res) => {
     }
 }
 
+const getDeleteUnitById = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const unitDeleted = await dbDeleteUnitById(id);
+
+        res.json({ unitDeleted });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al eliminar la unidad' });
+    }
+}
+
 
 export {
     createUnit,
     getAllUnits,
-    getUnitById
+    getUnitById,
+    getDeleteUnitById
 }

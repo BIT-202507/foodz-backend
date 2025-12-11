@@ -12,8 +12,13 @@ const dbGetUnitById = (_id) => {
     return UnitModel.findById(_id);
 }
 
+const dbDeleteUnitById = (_id) => {
+    return UnitModel.findByIdAndDelete(_id);
+}
+
 export {
     dbRegisterUnit,
     dbGetAllUnits,
-    dbGetUnitById
+    dbGetUnitById,
+    dbDeleteUnitById
 }
