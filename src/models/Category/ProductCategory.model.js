@@ -19,7 +19,8 @@ const ProductCategorySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'ProductCategory',
         default: null
-    }
+    },
+    description: String,
 }, {
     timestamps: true,
     versionKey: false
