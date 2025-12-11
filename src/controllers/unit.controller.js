@@ -1,4 +1,4 @@
-import { dbDeleteUnitById, dbGetAllUnits, dbGetUnitById, dbRegisterUnit } from "../services/unit.service.js";
+import { dbDeleteUnitById, dbGetAllUnits, dbGetUnitById, dbRegisterUnit, dbUpdateUnitById } from "../services/unit.service.js";
 
 const createUnit = async (req, res) => {
     try {
@@ -9,7 +9,7 @@ const createUnit = async (req, res) => {
         res.json({ unitRegistered });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al crear la unidad' });
+        res.status(500).json({ msg: 'Error al crear la unidad' });
     }
 }
 
@@ -19,7 +19,7 @@ const getAllUnits = async (req, res) => {
         res.json({ length: units.length, units });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al obtener las unidades' });
+        res.status(500).json({ msg: 'Error al obtener las unidades' });
     }
 }
 
@@ -32,7 +32,7 @@ const getUnitById = async (req, res) => {
         res.json({ unit });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al obtener la unidad' });
+        res.status(500).json({ msg: 'Error al obtener unidad por Id' });
     }
 }
 
@@ -45,7 +45,21 @@ const getDeleteUnitById = async (req, res) => {
         res.json({ unitDeleted });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al eliminar la unidad' });
+        res.status(500).json({ msg: 'Error al eliminar unidad por Id' });
+    }
+}
+
+const updateUnitById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const inputData = req.body;
+
+        const unitUpdated = await dbUpdateUnitById(id, inputData);
+
+        res.json({ unitUpdated });
+    } catch (error) {
+        console.error(error);
+        res.json({ msg: 'Error al actualizar unidad por Id' });
     }
 }
 
@@ -54,5 +68,6 @@ export {
     createUnit,
     getAllUnits,
     getUnitById,
-    getDeleteUnitById
+    getDeleteUnitById,
+    updateUnitById
 }

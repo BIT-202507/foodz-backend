@@ -16,9 +16,15 @@ const dbDeleteUnitById = (_id) => {
     return UnitModel.findByIdAndDelete(_id);
 }
 
+const dbUpdateUnitById = (_id, unitUpdated) => {
+    return UnitModel.findByIdAndUpdate(_id, unitUpdated, { new: true });
+}
+
+
 export {
     dbRegisterUnit,
     dbGetAllUnits,
     dbGetUnitById,
-    dbDeleteUnitById
+    dbDeleteUnitById,
+    dbUpdateUnitById
 }
