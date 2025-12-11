@@ -20,11 +20,18 @@ const dbUpdateCategoryById = (_id, categoryUpdated) => {
     return ProductCategoryModel.findByIdAndUpdate(_id, categoryUpdated, { new: true });
 }
 
+const dbGetCategoriesByParentId = (parentId) => {
+    return ProductCategoryModel.find({ parent: parentId });
+}
+
+
 
 export {
     dbRegisterCategory,
     dbGetAllCategories,
     dbGetCategoryById,
     dbDeleteCategoryById,
-    dbUpdateCategoryById
+    dbUpdateCategoryById,
+    dbGetCategoriesByParentId
 }
+
