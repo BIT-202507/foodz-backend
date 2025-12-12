@@ -5,6 +5,7 @@ import authRoute from './routes/auth.route.js';
 import usersRoute from './routes/users.route.js';
 import unitTypesRoute from './routes/unit-types.route.js';
 import productsRoute from './routes/products.route.js';
+import categoryRoute from './routes/category.route.js';
 
 
 const app = express();                  // Invocando core Express
@@ -31,6 +32,7 @@ app.use('/api/v1/auth', authRoute);           // Login/Register/RenewToken
 app.use('/api/v1/users', usersRoute);           // CRUD (Users): Autenticado
 app.use('/api/v1/unit-types', unitTypesRoute);
 app.use('/api/v1/products', productsRoute);
+app.use('/api/v1/categories', categoryRoute);
 
 
 

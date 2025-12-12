@@ -10,9 +10,9 @@ const CategorySchema = new Schema({
     },
     slug: {
         type: String,
-        required: true,
         unique: true,
-        trim: true
+        trim: true,
+        default: null
     },
     description: String,
     // Categoría padre (para subcategorías)
@@ -30,12 +30,12 @@ const CategorySchema = new Schema({
     created_by: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // required: true
     },
     updated_by: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // required: true
     }
 }, {
     timestamps: true,
@@ -44,11 +44,10 @@ const CategorySchema = new Schema({
 
 // Middleware: Antes de guardar, creamos un slug básico si no existe
 // TODO: Eliminar acentos en el slug en caso de tenerlos
-CategorySchema.pre('save', function (next) {
-    if (!this.slug) {
+CategorySchema.pre('save', function () {
+    if (!this.slug && this.name) {
         this.slug = this.name.toLowerCase().split(' ').join('-');
     }
-    next();
 });
 
 
