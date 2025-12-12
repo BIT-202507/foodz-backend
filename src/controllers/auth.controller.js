@@ -21,6 +21,7 @@ const loginUser = async ( req, res ) => {
 
     // Paso 3: Generar credencial digital (Token)
     const payload = {
+        id: userFound._id,          // Identificador Unico del Usuario, controlar quien hace que en la aplicacion
         name: userFound.name,       // Hola, Fulanito! 
         email: userFound.email,     // Para realizar comunicaciones (anonimas)
         role: userFound.role        // Para informar al frontend sobre la autorizacion que tienen los usuarios para acceder a las diferentes interfaces 
@@ -39,10 +40,37 @@ const loginUser = async ( req, res ) => {
     res.json({ token, user: jsonUserFound });
 }
 
-const reNewToken = ( req, res ) => {
-    // Extrae el payload del objeto requests que hemos asignado desde el Middleware de Autenticacion
+const reNewToken = async ( req, res ) => {
+    // Paso 1: Extrae el payload del objeto requests que hemos asignado desde el Middleware de Autenticacion
     const payload = req.payload;
-    res.json({ payload });
+
+    // Paso 2: Elimina propiedades innecesarias para el cliente
+    delete payload.iat;
+    delete payload.exp;
+
+    // Paso 3: Verificar si el usuario sigue existiendo en la base de datos
+    const userFound = await dbGetUserByEmail( payload.email );
+
+    if( ! userFound ) {
+        return res.json({ msg: 'Usuario ya no existe. No puede renovar el token' });
+    }
+
+    // Paso 4: Generar un nuevo token
+    const token = generateToken({
+        id: userFound._id,          // Identificador Unico del Usuario, controlar quien hace que en la aplicacion
+        name: userFound.name,       // Hola, Fulanito! 
+        email: userFound.email,     // Para realizar comunicaciones (anonimas)
+        role: userFound.role        // Para informar al frontend sobre la autorizacion que tienen los usuarios para acceder a las diferentes interfaces 
+    });
+
+    // Paso 5: Eliminar propiedades con datos sensibles
+    //         userFound es un BJSON (JSON Binario)
+    const jsonUserFound = userFound.toObject();     // Convertir un BJSON a JSON
+
+    delete jsonUserFound.password;      // Elimina la propiedad 'password' de un JSON
+
+    // Paso 6: Responder al cliente
+    res.json({ token, user: jsonUserFound });
 }
 
 
