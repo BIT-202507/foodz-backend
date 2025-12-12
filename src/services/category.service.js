@@ -5,11 +5,11 @@ const dbRegisterCategory = (newCategory) => {
 }
 
 const dbGetAllCategories = () => {
-    return ProductCategoryModel.find();
+    return ProductCategoryModel.find().populate('parent');
 }
 
 const dbGetCategoryById = (_id) => {
-    return ProductCategoryModel.findById(_id);
+    return ProductCategoryModel.findById(_id).populate('parent');
 }
 
 const dbDeleteCategoryById = (_id) => {

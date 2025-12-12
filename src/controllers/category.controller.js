@@ -83,61 +83,90 @@ const getDeleteCategoryById = async (req, res) => {
     }
 }
 
-// Función auxiliar para detectar ciclos
+// Función auxiliar para detectar "Ciclos" en la jerarquía de categorías.
+// Un ciclo ocurre si intentamos hacer que un PADRE sea HIJO de su propio DESCENDIENTE.
+// Ejemplo: Si A es padre de B, y B es padre de C... ¡No podemos hacer que C pase a ser padre de A!
+// Eso crearía un bucle infinito (A -> B -> C -> A -> B...)
 const isAncestor = async (potentialAncestor, categoryId) => {
+    // Comenzamos a revisar desde la categoría actual (categoryId)
     let currentId = categoryId;
+
+    // Mientras tengamos un ID que revisar...
     while (currentId) {
+        // 1. Verificamos: ¿Es este "currentId" igual al "potentialAncestor"?
+        // Si son iguales, significa que 'potentialAncestor' YA ESTABA ARRIBA en la jerarquía.
+        // Por lo tanto, si intentamos ponerlo debajo, cerraríamos el círculo creando un ciclo.
         if (String(currentId) === String(potentialAncestor)) {
-            return true;
+            return true; // ¡Se detectó un ciclo!
         }
+
+        // 2. Obtenemos la información completa de la categoría actual para ver quién es su padre
         const category = await dbGetCategoryById(currentId);
+
+        // Si la categoría no existe o ya llegamos a la raíz (no tiene padre), terminamos el bucle.
         if (!category || !category.parent) {
             break;
         }
+
+        // 3. Subimos un nivel: Ahora vamos a chequear al PADRE de la categoría actual
         currentId = category.parent;
     }
+
+    // Si terminamos el bucle y nunca encontramos coincidencia, NO es un ancestro. Todo está bien.
     return false;
 }
 
 const updateCategoryById = async (req, res) => {
     try {
+        // 1. Obtener el ID de la categoría que queremos editar (viene en la URL)
         const id = req.params.id;
+        // 2. Obtener los datos nuevos que envía el usuario (viene en el JSON del body)
         const inputData = req.body;
 
-        // Validar si la categoría a actualizar existe
+        // 3. PASO CRÍTICO: Validar que la categoría que queremos editar realmente exista en la BD.
         const categoryExists = await dbGetCategoryById(id);
         if (!categoryExists) {
             return res.status(404).json({ msg: 'Categoría no encontrada' });
         }
 
-        // Si se actualiza el padre
+        // 4. Lógica Especial: ¿El usuario está intentando cambiar el Padre (Mover la categoría)?
         if (inputData.parent) {
-            // Validar que el nuevo padre exista
+
+            // 4.1. Validar que el NUEVO padre que eligieron realmente exista.
+            // (No podemos ser hijos de una categoría fantasma)
             const newParent = await dbGetCategoryById(inputData.parent);
             if (!newParent) {
                 return res.status(404).json({ msg: 'La categoría padre no existe' });
             }
 
-            // Evitar auto-referencia
+            // 4.2. Evitar Auto-referencia:
+            // Una categoría NO puede ser su propio padre. (Ej: "Frutas" no puede estar dentro de "Frutas")
             if (String(id) === String(inputData.parent)) {
                 return res.status(400).json({ msg: 'Una categoría no puede ser su propio padre' });
             }
 
-            // Evitar ciclos: Verificar si 'id' es un ancestro del 'newParent'
-            // Si yo soy ancestro de mi futuro padre, entonces mi futuro padre es mi descendiente -> Ciclo.
+            // 4.3. Evitar Ciclos (La validación más compleja):
+            // Verificamos si la categoría que estoy editando (id) es un "Abuelo" o "Ancestro" de la categoría donde la quiero meter (inputData.parent).
+            // Si yo soy "Abuelo" de mi futuro "Padre", se crearía una paradoja temporal... digo, un bucle infinito en la base de datos.
             if (await isAncestor(id, inputData.parent)) {
                 return res.status(400).json({ msg: 'No se puede mover la categoría a una de sus subcategorías (Ciclo detectado)' });
             }
         }
 
+        // 5. Si pasamos todas las validaciones, procedemos a actualizar en la Base de Datos
         const categoryUpdated = await dbUpdateCategoryById(id, inputData);
 
+        // 6. Respondemos con éxito
         res.json({ categoryUpdated });
+
     } catch (error) {
         console.error(error);
+        // Manejo de error por duplicados (Código 11000 de MongoDB)
+        // Esto pasa si intentan cambiar el nombre a uno que ya existe en otra categoría.
         if (error.code === 11000) {
             return res.status(400).json({ msg: 'La categoría ya existe (nombre o slug duplicado)' });
         }
+        // Error genérico del servidor
         res.json({ msg: 'Error al actualizar categoría por Id' });
     }
 }
