@@ -9,7 +9,7 @@ import categoryRoute from './routes/category.route.js';
 
 
 const app = express();                  // Invocando core Express
-const PORT = 3000;                      // Definiendo el puerto de escucha
+const PORT = process.env.PORT || 3001;                      // Definiendo el puerto de escucha
 
 import seedUnitTypes from './config/initialSetup.js';
 
