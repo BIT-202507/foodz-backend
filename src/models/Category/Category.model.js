@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { model, models, Schema } = mongoose;
 
-const ProductCategorySchema = new Schema({
+const CategorySchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -14,22 +14,44 @@ const ProductCategorySchema = new Schema({
         unique: true,
         trim: true
     },
+    description: String,
     // Categoría padre (para subcategorías)
-    parent: {
+    parent_id: {
         type: Schema.Types.ObjectId,
-        ref: 'ProductCategory',
+        ref: 'Category',
         default: null
     },
-    description: String,
+    // El nivel 0 es la categoría principal
     level: {
         type: Number,
         default: 0
+    },
+    // Estos Ids deben registrarse automaticamente de acuerdo al usuario que se encuentra logueado
+    created_by: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    updated_by: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 }, {
     timestamps: true,
     versionKey: false
 });
 
-const ProductCategoryModel = models.ProductCategory || model('ProductCategory', ProductCategorySchema);
+// Middleware: Antes de guardar, creamos un slug básico si no existe
+// TODO: Eliminar acentos en el slug en caso de tenerlos
+CategorySchema.pre('save', function (next) {
+    if (!this.slug) {
+        this.slug = this.name.toLowerCase().split(' ').join('-');
+    }
+    next();
+});
 
-export default ProductCategoryModel;
+
+const CategoryModel = models.Category || model('Category', CategorySchema);
+
+export default CategoryModel;
