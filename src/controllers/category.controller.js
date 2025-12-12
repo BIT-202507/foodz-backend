@@ -6,6 +6,7 @@ import {
     dbRegisterCategory,
     dbUpdateCategoryById
 } from "../services/category.service.js";
+import { CATEGORY_CONFIG } from "../config/category.config.js";
 
 const createCategory = async (req, res) => {
     try {
@@ -17,6 +18,22 @@ const createCategory = async (req, res) => {
             if (!parentCategory) {
                 return res.status(404).json({ msg: 'La categoría padre no existe' });
             }
+
+            // Validar Nivel Máximo de Anidación usando la propiedad 'level' del padre
+            // Nivel del nuevo hijo = Nivel del padre + 1
+            const newLevel = parentCategory.level + 1;
+
+            if (newLevel >= CATEGORY_CONFIG.MAX_LEVELS) {
+                return res.status(400).json({
+                    msg: `No se puede exceder el nivel máximo de profundidad (${CATEGORY_CONFIG.MAX_LEVELS})`
+                });
+            }
+
+            // Asignamos el nivel calculado
+            inputData.level = newLevel;
+        } else {
+            // Si no tiene padre, es raíz (Nivel 0)
+            inputData.level = 0;
         }
 
         const categoryRegistered = await dbRegisterCategory(inputData);
@@ -109,11 +126,27 @@ const isAncestor = async (potentialAncestor, categoryId) => {
         }
 
         // 3. Subimos un nivel: Ahora vamos a chequear al PADRE de la categoría actual
-        currentId = category.parent;
+        // IMPORTANTE: Como dbGetCategoryById hace populate('parent'), field parent es un OBJETO.
+        // Debemos extraer el _id de ese objeto para la siguiente iteración.
+        currentId = category.parent._id;
     }
 
     // Si terminamos el bucle y nunca encontramos coincidencia, NO es un ancestro. Todo está bien.
     return false;
+}
+
+// Función recursiva para actualizar los niveles de los hijos (y nietos, etc.)
+// Se usa cuando una categoría se mueve de lugar.
+const updateSubcategoryLevels = async (parentId, parentLevel) => {
+    const children = await dbGetCategoriesByParentId(parentId);
+
+    for (const child of children) {
+        const newChildLevel = parentLevel + 1;
+        // Actualizamos el nivel del hijo directamente en BD
+        await dbUpdateCategoryById(child._id, { level: newChildLevel });
+        // Recursión: Ahora actualizamos a los hijos de este hijo
+        await updateSubcategoryLevels(child._id, newChildLevel);
+    }
 }
 
 const updateCategoryById = async (req, res) => {
@@ -151,12 +184,36 @@ const updateCategoryById = async (req, res) => {
             if (await isAncestor(id, inputData.parent)) {
                 return res.status(400).json({ msg: 'No se puede mover la categoría a una de sus subcategorías (Ciclo detectado)' });
             }
+
+            // 4.4. Calcular nuevo nivel y validar
+            const newLevel = newParent.level + 1;
+
+            if (newLevel >= CATEGORY_CONFIG.MAX_LEVELS) {
+                return res.status(400).json({
+                    msg: `No se puede exceder el nivel máximo de profundidad (${CATEGORY_CONFIG.MAX_LEVELS})`
+                });
+            }
+
+            inputData.level = newLevel;
+
+            // IMPORTANTE: Como cambió el nivel, debemos actualizar recursivamente a todos los descendientes
+            // Lo hacemos DESPUES de guardar el cambio actual principal, o marcamos un flag para hacerlo al final.
+            // Para asegurar consistencia, lo dispararemos después del update.
+        } else if (inputData.parent === null) {
+            // Si están quitando el padre (volviendo a raíz)
+            inputData.level = 0;
         }
 
         // 5. Si pasamos todas las validaciones, procedemos a actualizar en la Base de Datos
         const categoryUpdated = await dbUpdateCategoryById(id, inputData);
 
-        // 6. Respondemos con éxito
+        // 6. Si hubo cambio de nivel, propagar a los hijos
+        // (Verificamos si existe inputData.level, lo cual implica que calculamos un nuevo nivel arriba)
+        if (inputData.level !== undefined) {
+            await updateSubcategoryLevels(id, inputData.level);
+        }
+
+        // 7. Respondemos con éxito
         res.json({ categoryUpdated });
 
     } catch (error) {

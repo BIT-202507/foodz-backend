@@ -21,6 +21,10 @@ const ProductCategorySchema = new Schema({
         default: null
     },
     description: String,
+    level: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: true,
     versionKey: false
