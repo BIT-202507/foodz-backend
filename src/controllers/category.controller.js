@@ -1,5 +1,5 @@
 import { MAX_CATEGORY_LEVEL } from "../config/global.config.js";
-import { dbCreateCategory, dbGetCategoryById } from "../services/category.service.js";
+import { dbCreateCategory, dbGetAllCategories, dbGetCategoryById } from "../services/category.service.js";
 
 const createCategory = async (req, res) => {
     try {
@@ -40,7 +40,19 @@ const createCategory = async (req, res) => {
     }
 }
 
+const getAllCategories = async (req, res) => {
+    try {
+        const categories = await dbGetAllCategories();
+
+        res.json({ categories });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ msg: 'Error getting categories' });
+    }
+}
+
 
 export {
-    createCategory
+    createCategory,
+    getAllCategories
 }
