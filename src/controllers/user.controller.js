@@ -26,13 +26,22 @@ const createUser = async (req, res) => {
         const dataRegistered = await dbRegisterUser(inputData);   // Registrar los datos en la base de datos
 
         // Paso 5: Eliminar las propiedades sensibles
-        const jsonUserFound = userFound.toObject();     // Convierte un BJSON (Documento de Mongo) en un JSON (JavaScript Object)
+        const jsonUserFound = dataRegistered.toObject();     // Convierte un BJSON (Documento de Mongo) en un JSON (JavaScript Object)
         delete jsonUserFound.password;
 
+        // Paso 6: Generate Token (Opcional: Usuario se registre y loguee inmediatamente)
+        // const payload = {
+        //     id: jsonUserFound._id,
+        //     name: jsonUserFound.name,
+        //     email: jsonUserFound.email,
+        //     role: jsonUserFound.role
+        // };
+        // const token = generateToken(payload);
 
         // Paso 6: Responder al cliente
         res.json({
-            user: jsonUserFound
+            user: jsonUserFound,
+            // token
         });
     }
     catch (error) {
