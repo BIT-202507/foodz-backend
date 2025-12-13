@@ -27,13 +27,12 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        minLength: 8,
-        maxLength: 12
+        minLength: 8
         // TODO: Aprender Expresiones Regulares
     },
     role: {
         type: String,
-        enum: [ 'super-admin', 'admin', 'editor', 'colaborator', 'registered' ],
+        enum: ['super-admin', 'admin', 'editor', 'colaborator', 'registered'],
         default: 'registered'
     },
     isActive: {
@@ -48,7 +47,7 @@ const userSchema = new Schema({
     //     type: String,   // 
     //     trim: true
     // }
-},{
+}, {
     versionKey: false,              // Elimina el versionamiento de la estructura
     timestamps: true                // Habilita los campos createAt, updatedAt
 });
@@ -57,7 +56,7 @@ const userSchema = new Schema({
 const userModel = model(
     'user',             // Nombre de la coleccion en singular 'User'
     userSchema          // Esquema asociado al modelo
-); 
+);
 
 // Exportando el modelo User, para que sea usado en otras partes de la aplicacion
 export default userModel;
