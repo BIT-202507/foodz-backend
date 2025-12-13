@@ -42,8 +42,36 @@ const loginUser = async (req, res) => {
     res.json({ token, user: jsonUserFound });
 }
 
-const reNewtoken = (req, res) => {
-    res.json({ msg: 'Renovar token' });
+const reNewtoken = async (req, res) => {
+    // Paso 1: Extraer el payload del Objeto Request
+    const payload = req.payload;
+
+    // Paso 2: Verificar que el usuario al que se le va a generar el nuevo token no ha siso eliminado de la base de datos (por seguridad, tambien verificar el usuario esta activo)
+    const userFound = await dbGetUserByEmail(payload.email);
+
+    if (!userFound) {
+        return res.json({
+            msg: 'No se renueva el token. El usuario ha sido eliminado o esta inactivo'
+        });
+    }
+
+    // Paso 3: Crear el nuevo token con el payload actualizado
+    const newPayload = {
+        id: userFound._id,      // Referenciar quien hace que en la applicacion
+        name: userFound.name,   // Puedo usar este dato para personalizar mensajes
+        email: userFound.email, // Puedo usar este dato para enviar mensajes anonimos entre usuarios de la aplicacion
+        role: userFound.role    // Puedo usar este dato para acceder a las diferentes rutas permisionadas en el FrontEnd
+    };
+
+    // Paso 4: Generar el nuevo token
+    const newToken = generateToken(newPayload);
+
+    // Paso 5: Eliminar las propiedades con datos sensibles 
+    const jsonUserFound = userFound.toObject();     // Convertir un documento de MongoDB (BJSON), en un JavaScript Object (JSON)
+    delete jsonUserFound.password;                  // Elimina la propiedad 'password' del JSON
+
+    // Paso 6: Envia respuesta al cliente con el nuevo Token y los datos actualizados el
+    res.json({ token: newToken, user: jsonUserFound });
 }
 
 

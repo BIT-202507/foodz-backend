@@ -13,7 +13,20 @@ const generateToken = (payload) => {
     }
 }
 
+const validateToken = (token) => {
+    try {
+        return jwt.verify(
+            token,                 // Token: Cadena de texto para generar el token  
+            'semilla',             // Semilla: Cadena de texto para generar el token
+        );
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 
 export {
-    generateToken
+    generateToken,
+    validateToken
 }

@@ -15,7 +15,7 @@ const dbGetUserById = async (_id) => {
 }
 
 const dbGetUserByEmail = async (email) => {
-    return await userModel.findOne({ email });
+    return await userModel.findOne({ email, isActive: true });
 }
 
 const dbDeleteUserById = async (_id) => {
