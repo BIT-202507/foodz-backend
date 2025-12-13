@@ -21,8 +21,13 @@ const CategorySchema = new Schema({
         ref: 'Category',
         default: null
     },
-    // El nivel 0 es la categoría principal
+    // El nivel 0 es la categoría principal: Se agrega para determinar el nivel de profundidad de la subcategoria
     level: {
+        type: Number,
+        default: 0
+    },
+    // Contador de subcategorias: Se agrega para validar si las categorias tienen elementos hijos
+    childrenCount: {
         type: Number,
         default: 0
     },

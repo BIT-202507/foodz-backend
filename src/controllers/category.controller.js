@@ -20,7 +20,13 @@ const createCategory = async (req, res) => {
             }
 
             // Paso 3.2: Incrementar el nivel de la categoria.
-            level = parentCategory.level + 1;
+            parentCategory.level += 1;
+
+            // Paso 3.3: Incrementar el contador de subcategorias
+            parentCategory.childrenCount += 1;
+
+            // Paso 3.4: Guarda los cambios realizados sobre la categoria padre
+            await parentCategory.save();
         }
 
         // Paso 4: Validar que el nivel no exceda el maximo permitido
@@ -51,8 +57,22 @@ const getAllCategories = async (req, res) => {
     }
 }
 
+const getCategoryById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const category = await dbGetCategoryById(id);
+
+        res.json({ category });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ msg: 'Error: gettint category by id' });
+    }
+}
+
+
 
 export {
     createCategory,
-    getAllCategories
+    getAllCategories,
+    getCategoryById
 }

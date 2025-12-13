@@ -4,8 +4,8 @@ const dbGetAllCategories = async () => {
     return await CategoryModel.find().populate('parent_id');
 }
 
-const dbGetCategoryById = async (parent_id) => {
-    return await CategoryModel.findById(parent_id);
+const dbGetCategoryById = async (id) => {
+    return await CategoryModel.findById(id).populate('parent_id');
 }
 
 const dbCreateCategory = (newCategory) => {
