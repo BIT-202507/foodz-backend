@@ -6,7 +6,7 @@ import productsRoute from './routes/products.route.js';
 import authRoute from './routes/auth.route.js';
 
 const app = express();                  // Invocando core Express
-const PORT = 3000;                      // Definiendo el puerto de escucha
+const PORT = process.env.PORT || 3030;  // Definiendo el puerto de escucha por defecto el puerto 3030 si no puede leer la variable de entorno
 
 dbConnection();     // Ejecuta la conexion a la base de datos
 

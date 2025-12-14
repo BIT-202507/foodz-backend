@@ -4,7 +4,7 @@ const generateToken = (payload) => {
     try {
         return jwt.sign(
             payload,                // Payload: Carga util (Datos enviar en token al FrontEnd)
-            'semilla',              // Semilla: Cadena de texto para generar el token
+            process.env.JWT_SEED,   // Semilla: Cadena de texto para generar el token
             { expiresIn: '1h' }     // Expiracion: Tiempo de vida del token
         );
     } catch (error) {
@@ -17,7 +17,7 @@ const validateToken = (token) => {
     try {
         return jwt.verify(
             token,                 // Token: Cadena de texto para generar el token  
-            'semilla',             // Semilla: Cadena de texto para generar el token
+            process.env.JWT_SEED,  // Semilla: Cadena de texto para generar el token
         );
     } catch (error) {
         console.error(error);
