@@ -7,27 +7,22 @@ const createCategory = async (req, res) => {
         const inputData = req.body;
         const { name, parent_id, description } = inputData;
 
-        // Paso 2: Definir el nivel por defecto
-        let level = 0;  // Nivel por defecto, categoria principal
+        // Paso 2: Obtener la categoria padre si existe
+        const parentCategory = parent_id ? await dbGetCategoryById(parent_id) : null;
 
-        // Paso 3: Validar que el parent_id exista, es decir: Que el id de la categoria padre exista para crear la sub-categoria
+        // Paso 3: Validar y actualizar padre
         if (parent_id) {
-            // Paso 3.1: Verificar que la categoria padre esta registrada
-            const parentCategory = await dbGetCategoryById(parent_id);
-
             if (!parentCategory) {
                 return res.status(404).json({ msg: 'Parent category not found' });
             }
 
-            // Paso 3.2: Incrementar el nivel de la categoria.
-            parentCategory.level += 1;
-
-            // Paso 3.3: Incrementar el contador de subcategorias
+            // Actualizar el contador de subcategorias, incrementa el contador en 1 si el padre existe
             parentCategory.childrenCount += 1;
-
-            // Paso 3.4: Guarda los cambios realizados sobre la categoria padre
             await parentCategory.save();
         }
+
+        // Actualiza el nivel de la categoria, si existe una categoria padre, incrementa el nivel en 1, de lo contrario, el nivel es 0
+        const level = parentCategory ? parentCategory.level + 1 : 0;
 
         // Paso 4: Validar que el nivel no exceda el maximo permitido
         if (level > MAX_CATEGORY_LEVEL) {
