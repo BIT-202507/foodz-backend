@@ -41,6 +41,11 @@ const CategorySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         // required: true
+    },
+    // Para implementar el borrado logico
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true,
