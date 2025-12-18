@@ -58,6 +58,6 @@ const ProductNutritionSchema = new Schema({
     versionKey: false
 });
 
-const ProductNutritionModel = models.ProductNutrition || model('ProductNutrition', ProductNutritionSchema);
+const ProductNutritionModel = models.ProductNutrition || model('Product-Nutrition', ProductNutritionSchema);
 
 export default ProductNutritionModel;

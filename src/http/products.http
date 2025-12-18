@@ -1,0 +1,130 @@
+### VARIABLES GLOBALES
+@api = http://localhost:3000/api/v1/products
+@categoryApi = http://localhost:3000/api/v1/categories
+
+# ==========================================
+# 0. SETUP: NECESITAMOS CATEGORÍAS
+# ==========================================
+
+### Crear Categoría Bebida
+# @name createCategoryDrink
+POST {{categoryApi}}
+Content-Type: application/json
+
+{
+    "name": "Bebidas",
+    "description": "Refrescos y jugos"
+}
+
+@drinkCategoryId = {{createCategoryDrink.response.body.newCategory._id}}
+
+# ==========================================
+# 1. PRODUCTOS (CORE)
+# ==========================================
+
+### Crear Producto (Plato)
+# @name createDish
+POST {{api}}
+Content-Type: application/json
+
+{
+    "name": "Coca Cola Zero",
+    "description": "Refresco sin azucar",
+    "category": "{{drinkCategoryId}}",
+    "type": "dish",
+    "price": 2.50,
+    "portion_size": "355ml"
+}
+
+@dishId = {{createDish.response.body.newProduct._id}}
+
+### Obtener Todos
+GET {{api}}
+
+### Filtrar por tipo
+GET {{api}}?type=dish
+
+### Obtener por ID
+GET {{api}}/{{dishId}}
+
+### Actualizar Precio
+PUT {{api}}/{{dishId}}
+Content-Type: application/json
+
+{
+    "price": 3.00
+}
+
+### Borrar (Soft Delete)
+# DELETE {{api}}/{{dishId}}
+
+
+# ==========================================
+# 2. NUTRICIÓN
+# ==========================================
+
+### Agregar Información Nutricional
+PUT {{api}}/{{dishId}}/nutrition
+Content-Type: application/json
+
+{
+    "calories": 0,
+    "sugar": 0,
+    "sodium": 40
+}
+
+### Ver Info Nutricional
+GET {{api}}/{{dishId}}/nutrition
+
+
+# ==========================================
+# 3. INGREDIENTES (RELACIÓN PRODUCTO-PRODUCTO)
+# ==========================================
+# Para probar ingredientes, necesitamos crear otro producto que sea tipo 'ingredient'.
+
+### Crear Ingrediente "Jarabe"
+# @name createIngredient
+POST {{api}}
+Content-Type: application/json
+
+{
+    "name": "Jarabe de Cola",
+    "category": "{{drinkCategoryId}}",
+    "type": "ingredient",
+    "price": 0.50
+}
+
+@ingredientProdId = {{createIngredient.response.body.newProduct._id}}
+
+### Crear Ingrediente "Agua Carbonatada"
+# @name createIngredient2
+POST {{api}}
+Content-Type: application/json
+
+{
+    "name": "Agua Carbonatada",
+    "category": "{{drinkCategoryId}}",
+    "type": "ingredient",
+    "price": 0.10
+}
+
+@ingredientProdId2 = {{createIngredient2.response.body.newProduct._id}}
+
+# NOTA: Para agregar ingredientes necesitamos IDs de Unidades (Unit y UnitType). 
+# Como no tenemo endpoints faciles para crear unidades aqui (se crean en seed),
+# asumiremos que existen o fallará si son requeridos y no enviamos IDs validos.
+# El modelo ProductIngredient requiere "unitType" y "unit".
+# Si fallara, tendriamos que buscar los IDs de las unidades primero.
+
+# (Opcional) Listar Unidades si existiera endpoint
+# GET http://localhost:3000/api/v1/unit-types
+
+### Agregar Ingrediente al Plato
+# POST {{api}}/{{dishId}}/ingredients
+# Content-Type: application/json
+# {
+#     "ingredient_id": "{{ingredientProdId}}",
+#     "quantity": 100,
+#     "unit": "ID_DE_UNIDAD_ML", 
+#     "unitType": "ID_DE_TIPO_VOLUMEN"
+# }

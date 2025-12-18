@@ -13,7 +13,7 @@ const ProductSchema = new Schema({
     // Relación con la categoría del producto
     category: {
         type: Schema.Types.ObjectId,
-        ref: 'ProductCategory' // Corregido de 'Category' a 'ProductCategory'
+        ref: 'Category'
     },
     // Tipo de producto: plato completo, ingrediente individual o complemento
     type: {
