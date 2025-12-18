@@ -15,6 +15,12 @@ const authenticationUser = (req, res, next) => {
         // Paso 3: Extraer el payload del token (decodificarlo)
         const payload = validateToken(token);
 
+        if (!payload) {
+            return res.status(401).json({
+                msg: 'Error: Token invalido o expirado'
+            });
+        }
+
         // Paso 4: Eliminar propiedades sensibles del payload
         delete payload.iat;
         delete payload.exp;

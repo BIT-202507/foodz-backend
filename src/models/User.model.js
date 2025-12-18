@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { ALLOWED_ROLES, ROLES } from '../config/global.config.js';
 
 // Creando una instancia del esquema de entidad User
 const userSchema = new Schema({
@@ -32,8 +33,8 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['super-admin', 'admin', 'editor', 'colaborator', 'registered'],
-        default: 'registered'
+        enum: ALLOWED_ROLES,
+        default: ROLES.REGISTERED
     },
     isActive: {
         type: Boolean,
