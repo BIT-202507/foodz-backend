@@ -1,73 +1,70 @@
-import { dbDeleteUnitById, dbGetAllUnits, dbGetUnitById, dbRegisterUnit, dbUpdateUnitById } from "../services/unit.service.js";
+import UnitModel from '../models/Unit/Unit.model.js';
 
-const createUnit = async (req, res) => {
+export const createUnit = async (req, res) => {
     try {
-        const inputData = req.body;
+        const { name, symbol, type } = req.body;
 
-        const unitRegistered = await dbRegisterUnit(inputData);
+        const newUnit = new UnitModel({ name, symbol, type });
+        await newUnit.save();
 
-        res.json({ unitRegistered });
+        res.status(201).json(newUnit);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: 'Error al crear la unidad' });
+        res.status(500).json({ message: error.message });
     }
-}
+};
 
-const getAllUnits = async (req, res) => {
+export const getAllUnits = async (req, res) => {
     try {
-        const units = await dbGetAllUnits();
-        res.json({ length: units.length, units });
+        const units = await UnitModel.find().populate('type');
+        res.status(200).json(units);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: 'Error al obtener las unidades' });
+        res.status(500).json({ message: error.message });
     }
-}
+};
 
-const getUnitById = async (req, res) => {
+export const getUnitById = async (req, res) => {
     try {
-        const id = req.params.id;
+        const { id } = req.params;
+        const unit = await UnitModel.findById(id).populate('type');
 
-        const unit = await dbGetUnitById(id);
+        if (!unit) {
+            return res.status(404).json({ message: 'Unit not found' });
+        }
 
-        res.json({ unit });
+        res.status(200).json(unit);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: 'Error al obtener unidad por Id' });
+        res.status(500).json({ message: error.message });
     }
-}
+};
 
-const getDeleteUnitById = async (req, res) => {
+
+export const updateUnit = async (req, res) => {
     try {
-        const id = req.params.id;
+        const { id } = req.params;
+        const updatedUnit = await UnitModel.findByIdAndUpdate(id, req.body, { new: true });
 
-        const unitDeleted = await dbDeleteUnitById(id);
+        if (!updatedUnit) {
+            return res.status(404).json({ message: 'Unit not found' });
+        }
 
-        res.json({ unitDeleted });
+        res.status(200).json(updatedUnit);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: 'Error al eliminar unidad por Id' });
+        res.status(500).json({ message: error.message });
     }
-}
+};
 
-const updateUnitById = async (req, res) => {
+
+export const deleteUnit = async (req, res) => {
     try {
-        const id = req.params.id;
-        const inputData = req.body;
+        const { id } = req.params;
+        const deletedUnit = await UnitModel.findByIdAndDelete(id);
 
-        const unitUpdated = await dbUpdateUnitById(id, inputData);
+        if (!deletedUnit) {
+            return res.status(404).json({ message: 'Unit not found' });
+        }
 
-        res.json({ unitUpdated });
+        res.status(200).json({ message: 'Unit deleted successfully' });
     } catch (error) {
-        console.error(error);
-        res.json({ msg: 'Error al actualizar unidad por Id' });
+        res.status(500).json({ message: error.message });
     }
-}
-
-
-export {
-    createUnit,
-    getAllUnits,
-    getUnitById,
-    getDeleteUnitById,
-    updateUnitById
-}
+};

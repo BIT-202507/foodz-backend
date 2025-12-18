@@ -1,7 +1,7 @@
 import UnitModel from "../models/Unit/Unit.model.js";
 
 const dbRegisterUnit = (newUnit) => {
-    return UnitModel.create(newUnit);
+    return new UnitModel(newUnit);
 }
 
 const dbGetAllUnits = () => {

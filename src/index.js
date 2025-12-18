@@ -9,6 +9,7 @@ import unitRoute from './routes/unit.route.js';
 import productsRoute from './routes/products.route.js';
 import categoryRoute from './routes/category.route.js';
 
+
 const app = express();                  // Invocando core Express
 const PORT = process.env.PORT || 3030;  // Definiendo el puerto de escucha por defecto el puerto 3030 si no puede leer la variable de entorno
 

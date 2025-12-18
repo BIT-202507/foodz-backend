@@ -17,6 +17,6 @@ const UnitTypeSchema = new Schema({
     versionKey: false
 });
 
-const UnitTypeModel = models.UnitType || model('UnitType', UnitTypeSchema);
+const UnitTypeModel = models.UnitType || model('Unit-Type', UnitTypeSchema);
 
 export default UnitTypeModel;

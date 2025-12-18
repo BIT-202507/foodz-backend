@@ -45,6 +45,6 @@ ProductIngredientSchema.index(
     { unique: true }                            // Campos del índice
 );
 
-const ProductIngredientModel = models.ProductIngredient || model('ProductIngredient', ProductIngredientSchema);
+const ProductIngredientModel = models.ProductIngredient || model('Product-Ingredient', ProductIngredientSchema);
 
 export default ProductIngredientModel;

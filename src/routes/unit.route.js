@@ -1,14 +1,13 @@
 import express from 'express';
-import { createUnit, getAllUnits, getDeleteUnitById, getUnitById, updateUnitById } from '../controllers/unit.controller.js';
+
+import { createUnit, getAllUnits, getUnitById, updateUnit, deleteUnit } from '../controllers/unit.controller.js';
 
 const router = express.Router();
 
-// Definicion de las rutas (EndPoints) para tipos de unidad
 router.post('/', createUnit);
 router.get('/', getAllUnits);
 router.get('/:id', getUnitById);
-router.delete('/:id', getDeleteUnitById);
-router.patch('/:id', updateUnitById);
+router.patch('/:id', updateUnit);
+router.delete('/:id', deleteUnit);
 
-// Exportando el router usando CommonJS
 export default router;
