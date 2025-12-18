@@ -1,6 +1,7 @@
 import express from 'express';
 
 import dbConnection from './config/mongo.config.js';
+
 import authRoute from './routes/auth.route.js';
 import usersRoute from './routes/users.route.js';
 import unitTypesRoute from './routes/unit-types.route.js';
@@ -8,9 +9,8 @@ import unitRoute from './routes/unit.route.js';
 import productsRoute from './routes/products.route.js';
 import categoryRoute from './routes/category.route.js';
 
-
 const app = express();                  // Invocando core Express
-const PORT = process.env.PORT || 3001;                      // Definiendo el puerto de escucha
+const PORT = process.env.PORT || 3030;  // Definiendo el puerto de escucha por defecto el puerto 3030 si no puede leer la variable de entorno
 
 import seedUnitTypes from './config/initialSetup.js';
 
@@ -35,7 +35,6 @@ app.use('/api/v1/unit-types', unitTypesRoute);
 app.use('/api/v1/units', unitRoute);
 app.use('/api/v1/products', productsRoute);
 app.use('/api/v1/categories', categoryRoute);
-
 
 
 // Lanzando el servidor web usando Express

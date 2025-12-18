@@ -1,31 +1,42 @@
 import bcrypt from 'bcrypt';
 
-// Encriptar la contrasenia
-const encryptedPassword = ( passwordUser ) => {
-    const salt = bcrypt.genSaltSync(9);      // Generar un fragmento o cadena aleatoria
+const encryptedPassword = (originalPassword) => {
+    try {
+        // Paso 1: Generar una cadena aleatoria para agregar complejidad a la generacion de la encriptacion de la contrasenia
+        const salt = bcrypt.genSaltSync(9);
 
-    console.log( salt );
+        // Paso 2: Encriptar la contrasenia (usa salt mezclar este con password original)
+        const hashPassword = bcrypt.hashSync(
+            originalPassword,   // Password Original (123456789)
+            salt                // Cadena aleatoria (Salt)
+        );
 
-    // Combinar la clave del usuario, con el salt
-    const hashPassword = bcrypt.hashSync(
-        passwordUser,       // La contrasenia del usuario sin encriptar (123456789)
-        salt                // Cadena que se genera aleatoriamente
-    );
+        // Paso 3: Retornamos el password encriptado
+        return hashPassword;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 
-    return hashPassword;    // Devuelve la contrasenia encriptada
 }
 
-// Verificar la contrasenia
-const verifyEncriptedPassword = ( originalPassword, hashPassword ) => {
-    // Return Boolean
-    return bcrypt.compareSync(
-        originalPassword,       // Password Original (envian en body)
-        hashPassword            // Password Base de Datos (hash password)
-    );
+const validatePassword = (originalPassword, hashPassword) => {
+    try {
+        const isValid = bcrypt.compareSync(
+            originalPassword,  // Password Original (123456789)
+            hashPassword       // Password Encriptado (viene de la base de datos)
+        );
+
+        return isValid;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+
 }
 
 
 export {
     encryptedPassword,
-    verifyEncriptedPassword
+    validatePassword
 }

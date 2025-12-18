@@ -1,8 +1,9 @@
-const authorizationUser = ( req, res, next ) => {
-    console.log( 'Hola soy el Middleware de Autorizacion' );
-
+const authorizationUser = (req, res, next) => {
+    // TODO: Implementar solucion para filtrar permisos por rol
+    console.log('Middleware de autorizacion');
     next();
 }
 
 
 export default authorizationUser;
+

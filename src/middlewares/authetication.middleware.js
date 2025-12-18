@@ -1,30 +1,34 @@
-import { verifyToken } from "../helpers/jwt.helper.js";
+import { validateToken } from "../helpers/jwt.helper.js";
 
-const authenticationUser = ( req, res, next ) => {
+const authenticationUser = (req, res, next) => {
     try {
+        // Paso 1: Extraer el token del header
+        const token = req.header('X-Token');
 
-        // Paso 1: Obtener el string donde viene el token
-        const token = req.header( 'X-Token' );
-        
-        // Paso 2: Verifica que la cadena no venga vacia
-        if( ! token ) {
-            return res.json({ msg: 'Error: Cadena del token vacia' });
+        // Paso 2: Validar que el token exista
+        if (!token) {
+            return res.json({
+                msg: 'Error: Cadena del token vacia'
+            });
         }
-    
-        // Paso 3: Verificar si el token es valido
-        const payload = verifyToken( token );
-        
-        // Paso 4: Enviar a traves del Request los datos del payload
-        req.payload  = payload;
 
-        // Paso 5: Saltar a la siguiente funcion definida en la ruta
+        // Paso 3: Extraer el payload del token (decodificarlo)
+        const payload = validateToken(token);
+
+        // Paso 4: Eliminar propiedades sensibles del payload
+        delete payload.iat;
+        delete payload.exp;
+
+        // Paso 5: Enviar el payload a traves el objeto Request
+        req.payload = payload;
+
+        // Paso 6: El pasamos el control del flujo de la aplicacion a la siguiente funcion
         next();
-        
+
     } catch (error) {
-        console.error( error );
+        console.error(error);
         res.json({ msg: 'Error token invalido' });
     }
-
 }
 
 

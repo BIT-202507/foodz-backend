@@ -1,54 +1,59 @@
 import { Schema, model } from 'mongoose';
 
-
-const UserSchema = new Schema({
+// Creando una instancia del esquema de entidad User
+const userSchema = new Schema({
     name: {
-        //Reglas
-        type : String,
-        required : true,
-        //Modificador
-        trim : true // Esto ayuda a quitar espacios delante y/o detras de lo escrito 
-        },
+        type: String,
+        required: true,
+        trim: true
+    },
     username: {
-        type : String,
-        required : true,
-        trim : true,
-        unique : true, //Imposibilita el que exista mas de un "username" con las mismas propiedades
-        lowercase: true //Pide que todo sea en minuscula 
+        // Reglas
+        type: String,       // Define el tipo
+        required: true,     // Es obligatorio
+        // Modificador
+        unique: true,       // Obliga a que el valor sea unico
+        trim: true,         // Elimina los espacios en blanco (inicio/final del string)
+        lowercase: true     // Transforma todo a minusculas
     },
     email: {
-        type : String,
-        required : true,
-        unique : true,
-        trim : true,
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
         lowercase: true
     },
-    password:{
-        type : String,
-        required : true,
+    password: {
+        type: String,
+        required: true,
         trim: true,
-        minLength : 4,
-        maxLenght : 12
+        minLength: 8
+        // TODO: Aprender Expresiones Regulares
     },
-    role:{
-        type : String,
-        require : true,
-        enum : ['admin','colaborator','registered'], // Crear "predeterminados"
+    role: {
+        type: String,
+        enum: ['super-admin', 'admin', 'editor', 'colaborator', 'registered'],
         default: 'registered'
     },
-    isActive : {
-        type : Boolean,
-        default : true
+    isActive: {
+        type: Boolean,
+        default: false
     },
-},{
-    versionKey : false,
-    timestamps: true
+    activationCode: {
+        type: String,
+        trim: true,
+        default: null
+    }
+}, {
+    versionKey: false,              // Elimina el versionamiento de la estructura
+    timestamps: true                // Habilita los campos createAt, updatedAt
 });
 
-const UserModel = model(
-    'users', // nombre de la lista(coleccion) de datos de los ususarios
-    UserSchema // nombre del esquema asociado al modelo 
+// Crear el modelo User basado en el esquema userSchema
+const userModel = model(
+    'user',             // Nombre de la coleccion en singular 'User'
+    userSchema          // Esquema asociado al modelo
 );
 
-
-export default UserModel;
+// Exportando el modelo User, para que sea usado en otras partes de la aplicacion
+export default userModel;
