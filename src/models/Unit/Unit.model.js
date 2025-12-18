@@ -13,10 +13,14 @@ const UnitSchema = new Schema({
         trim: true
     },
     // Relación con el tipo de unidad (ej: Masa, Volumen)
-    type: {
+    unit_type: {
         type: Schema.Types.ObjectId,
         ref: 'UnitType',
         required: true
+    },
+    description: {
+        type: String,
+        trim: true
     }
 }, {
     timestamps: true,
