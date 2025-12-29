@@ -36,6 +36,17 @@ const userSchema = new Schema({
         enum: ALLOWED_ROLES,
         default: ROLES.REGISTERED
     },
+    clientType: {
+        type: String,
+        enum: ['casual', 'member'],
+        default: 'casual'
+    },
+    profile: {
+        phone: String,
+        address: String,
+        city: String,
+        preferences: [String] // Ej: "Sin sal", "Vegetariano"
+    },
     isActive: {
         type: Boolean,
         default: false
