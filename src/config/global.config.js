@@ -11,3 +11,6 @@ export const ROLES = {
 
 // Exporta una lista de roles
 export const ALLOWED_ROLES = Object.values(ROLES);
+
+// Configuración para subida de archivos
+export const MAX_FILE_UPLOAD_LIMIT = 5;
