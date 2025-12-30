@@ -1,59 +1,40 @@
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+import upload from '../config/multer.config.js';
+import { MAX_FILE_UPLOAD_LIMIT } from '../config/global.config.js';
 
-// Configuracion necesaria para usar __dirname en Módulos ES (ESM)
-// Ya que __dirname no existe por defecto en "type": "module"
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export const uploadMultiple = (req, res, next) => {
+    // Definimos el middleware de Multer: campo 'files', máx definido en config global
+    // Usamos la instancia 'upload' importada de la configuración
+    const uploadMiddleware = upload.array('files', MAX_FILE_UPLOAD_LIMIT);
 
-// Definimos la ruta donde se guardarán los archivos
-// path.join combina segmentos de ruta de forma segura para el sistema operativo
-const uploadDir = path.join(__dirname, '../../uploads');
+    uploadMiddleware(req, res, (err) => {
+        if (err) {
+            // Manejamos errores específicos de Multer
+            if (err.name === 'MulterError') {
+                // LIMIT_UNEXPECTED_FILE ocurre cuando se excede el número de archivos (o el field name está mal)
+                if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+                    return res.status(400).json({
+                        message: 'Error de validación en la carga de archivos',
+                        detail: `Has excedido el límite de ${MAX_FILE_UPLOAD_LIMIT} archivos permitidos o el campo no se llama "files".`
+                    });
+                }
 
-// Verificamos si el directorio existe, si no, lo creamos
-// recursive: true permite crear carpetas anidadas si es necesario
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+                // Otros errores de Multer (tamaño, tipo, etc.)
+                return res.status(400).json({
+                    message: 'Error al subir archivos',
+                    error: err.code
+                });
+            }
 
-// Configuración de almacenamiento local (DiskStorage) de Multer
-const storage = multer.diskStorage({
-    // destination: Define DÓNDE se guardarán los archivos
-    destination: function (req, file, cb) {
-        // cb (callback) recibe (error, directorio_destino)
-        cb(null, uploadDir);
-    },
-    // filename: Define CÓMO se llamará el archivo guardado
-    filename: function (req, file, cb) {
-        // Generamos un nombre único usando la fecha actual + un numero random
-        // Esto evita que archivos con el mismo nombre se sobrescriban
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        // path.extname obtiene la extensión original del archivo (.jpg, .png, etc)
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
+            // Error desconocido / del servidor
+            return res.status(500).json({
+                message: 'Error interno del servidor al procesar archivos',
+                error: err.message
+            });
+        }
 
-// Filtro para validar qué archivos permitimos subir
-const fileFilter = (req, file, cb) => {
-    // Aceptar solo imagenes (mimetypes que empiecen por 'image/')
-    if (file.mimetype.startsWith('image/')) {
-        // null = sin error, true = aceptar archivo
-        cb(null, true);
-    } else {
-        // Retornamos un error si no es imagen, false = rechazar archivo
-        cb(new Error('Solo se permiten archivos de imagen!'), false);
-    }
+        // Si no hay error, pasamos al controlador
+        next();
+    });
 };
-
-// Inicializamos Multer con la configuración definida
-const upload = multer({
-    storage: storage,      // Dónde guardar
-    fileFilter: fileFilter, // Qué aceptar
-    limits: {
-        fileSize: 5 * 1024 * 1024 // Limite de tamaño: 5MB (en bytes)
-    }
-});
 
 export default upload;
