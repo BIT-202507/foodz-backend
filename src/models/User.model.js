@@ -55,6 +55,12 @@ const userSchema = new Schema({
         type: String,
         trim: true,
         default: null
+    },
+    avatar: {
+        // Relación con el modelo 'File'. Guardamos el _id del archivo de imagen
+        type: Schema.Types.ObjectId,
+        ref: 'File',
+        default: null
     }
 }, {
     versionKey: false,              // Elimina el versionamiento de la estructura

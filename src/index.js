@@ -8,6 +8,7 @@ import unitTypesRoute from './routes/unit-types.route.js';
 import unitRoute from './routes/unit.route.js';
 import productsRoute from './routes/products.route.js';
 import categoryRoute from './routes/category.route.js';
+import fileRoute from './routes/file.routes.js';
 
 
 const app = express();                  // Invocando core Express
@@ -36,6 +37,7 @@ app.use('/api/v1/unit-types', unitTypesRoute);
 app.use('/api/v1/units', unitRoute);
 app.use('/api/v1/products', productsRoute);
 app.use('/api/v1/categories', categoryRoute);
+app.use('/api/v1/files', fileRoute);
 
 
 // Lanzando el servidor web usando Express

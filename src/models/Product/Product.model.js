@@ -43,7 +43,13 @@ const ProductSchema = new Schema({
         min: 0,
         default: 0
     },
-    image_url: String,
+    image_url: String, // Campo heredado. Preferir usar 'images' para nuevas funcionalidades
+
+    // Lista de imágenes del producto. Array de referencias al modelo 'File'
+    images: [{
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+    }],
     preparation_time: Number,
     portion_size: String,
     status: {
