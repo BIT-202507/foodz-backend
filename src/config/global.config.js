@@ -14,3 +14,11 @@ export const ALLOWED_ROLES = Object.values(ROLES);
 
 // Configuración para subida de archivos
 export const MAX_FILE_UPLOAD_LIMIT = 5;
+
+// Rutas/Carpetas para subida de archivos
+export const UPLOAD_PATHS = {
+    PRODUCTS: 'products',
+    AVATARS: 'avatars',
+    DOCUMENTS: 'docs',
+    DEFAULT: 'others'
+};

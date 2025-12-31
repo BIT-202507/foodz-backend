@@ -11,8 +11,9 @@ export const uploadFile = async (req, res) => {
     try {
         // Multer agrega el objeto 'file' (si es uno) o 'files' (si son varios) al objeto 'req'
         // Si no existen, significa que no se subió nada o hubo un error previo
-        if (!req.file && !req.files) {
-            return res.status(400).json({ message: 'No se ha subido ningún archivo' });
+        if (!req.file && (!req.files || req.files.length === 0)) {
+            const entity = req.uploadContext || 'archivo'; // fallback genérico
+            return res.status(400).json({ message: `No se ha subido ${entity}` });
         }
 
         // Normalizamos para manejar siempre un array, ya sea 1 o varios archivos
