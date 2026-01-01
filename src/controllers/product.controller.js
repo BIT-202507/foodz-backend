@@ -39,9 +39,13 @@ const createProduct = async (req, res) => {
  */
 const getAllProducts = async (req, res) => {
     try {
-        const filters = req.query; // category, type, status, search
-        const products = await dbGetAllProducts(filters);
-        res.json({ products });
+        const { page, limit, ...filters } = req.query; // Separar paginacion de filtros
+
+        // El servicio ahora retorna un objeto con { docs, totalDocs, ... }
+        const result = await dbGetAllProducts({ ...filters, page, limit });
+
+        // Respondemos con la estructura paginada
+        res.json(result);
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ msg: 'Error getting products' });

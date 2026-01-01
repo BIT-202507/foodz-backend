@@ -22,8 +22,8 @@ Content-Type: application/json
 # 1. PRODUCTOS (CORE)
 # ==========================================
 
-### Crear Producto (Plato)
-# @name createDish
+### Crear Producto 1 (Coca Cola)
+# @name createProd1
 POST {{api}}
 Content-Type: application/json
 
@@ -36,13 +36,58 @@ Content-Type: application/json
     "portion_size": "355ml"
 }
 
-@dishId = {{createDish.response.body.newProduct._id}}
+### Crear Producto 2 (Pepsi)
+# @name createProd2
+POST {{api}}
+Content-Type: application/json
 
-### Obtener Todos
+{
+    "name": "Pepsi Regular",
+    "description": "Refresco de cola",
+    "category": "{{drinkCategoryId}}",
+    "type": "dish",
+    "price": 2.20,
+    "portion_size": "355ml"
+}
+
+@dishId = {{createProd1.response.body.newProduct._id}}
+
+# ==========================================
+# 2. CONSULTAS AVANZADAS (SEARCH & PAGINATION)
+# ==========================================
+
+### 2.1 Obtener Todos (Paginación por defecto)
+# Deberia retornar page:1, limit:10 (o lo definido en backend)
 GET {{api}}
 
-### Filtrar por tipo
+### 2.2 Paginación Personalizada
+# Pagina 1, solo 1 elemento
+GET {{api}}?page=1&limit=1
+
+### 2.3 Paginación: Segunda Página
+# Deberia traer el siguiente producto si creaste al menos 2
+GET {{api}}?page=2&limit=1
+
+### 2.4 Búsqueda por Texto
+# Busca productos que contengan "Coca"
+GET {{api}}?search=Coca
+
+### 2.5 Filtrar por Tipo
 GET {{api}}?type=dish
+
+### 2.6 Filtrar por Categoría
+GET {{api}}?category={{drinkCategoryId}}
+
+### 2.7 Filtrar por Estado (Active/Inactive)
+GET {{api}}?status=active
+
+### 2.8 COMBINACIÓN COMPLETA
+# Buscar "Coca" que sea "dish", esté "active", pagina 1, limite 5
+GET {{api}}?search=Coca&type=dish&status=active&page=1&limit=5
+
+# ==========================================
+# 3. OPERACIONES CRUD (ID)
+# ==========================================
 
 ### Obtener por ID
 GET {{api}}/{{dishId}}
@@ -56,11 +101,11 @@ Content-Type: application/json
 }
 
 ### Borrar (Soft Delete)
-# DELETE {{api}}/{{dishId}}
+DELETE {{api}}/{{dishId}}
 
 
 # ==========================================
-# 2. NUTRICIÓN
+# 4. SUB-RECURSOS (NUTRICIÓN E INGREDIENTES)
 # ==========================================
 
 ### Agregar Información Nutricional
@@ -75,56 +120,3 @@ Content-Type: application/json
 
 ### Ver Info Nutricional
 GET {{api}}/{{dishId}}/nutrition
-
-
-# ==========================================
-# 3. INGREDIENTES (RELACIÓN PRODUCTO-PRODUCTO)
-# ==========================================
-# Para probar ingredientes, necesitamos crear otro producto que sea tipo 'ingredient'.
-
-### Crear Ingrediente "Jarabe"
-# @name createIngredient
-POST {{api}}
-Content-Type: application/json
-
-{
-    "name": "Jarabe de Cola",
-    "category": "{{drinkCategoryId}}",
-    "type": "ingredient",
-    "price": 0.50
-}
-
-@ingredientProdId = {{createIngredient.response.body.newProduct._id}}
-
-### Crear Ingrediente "Agua Carbonatada"
-# @name createIngredient2
-POST {{api}}
-Content-Type: application/json
-
-{
-    "name": "Agua Carbonatada",
-    "category": "{{drinkCategoryId}}",
-    "type": "ingredient",
-    "price": 0.10
-}
-
-@ingredientProdId2 = {{createIngredient2.response.body.newProduct._id}}
-
-# NOTA: Para agregar ingredientes necesitamos IDs de Unidades (Unit y UnitType). 
-# Como no tenemo endpoints faciles para crear unidades aqui (se crean en seed),
-# asumiremos que existen o fallará si son requeridos y no enviamos IDs validos.
-# El modelo ProductIngredient requiere "unitType" y "unit".
-# Si fallara, tendriamos que buscar los IDs de las unidades primero.
-
-# (Opcional) Listar Unidades si existiera endpoint
-# GET http://localhost:3000/api/v1/unit-types
-
-### Agregar Ingrediente al Plato
-# POST {{api}}/{{dishId}}/ingredients
-# Content-Type: application/json
-# {
-#     "ingredient_id": "{{ingredientProdId}}",
-#     "quantity": 100,
-#     "unit": "ID_DE_UNIDAD_ML", 
-#     "unitType": "ID_DE_TIPO_VOLUMEN"
-# }
