@@ -13,14 +13,16 @@ const ProductSchema = new Schema({
     // Relación con la categoría del producto
     category: {
         type: Schema.Types.ObjectId,
-        ref: 'Category'
+        ref: 'Category',
+        index: true
     },
     // Tipo de producto: plato completo, ingrediente individual o complemento
     type: {
         type: String,
         enum: ['dish', 'ingredient', 'addon'],
         default: 'dish',
-        required: true
+        required: true,
+        index: true
     },
     // Lista de alérgenos presentes en el producto (ej: 'Gluten', 'Nueces')
     allergens: {
@@ -41,7 +43,8 @@ const ProductSchema = new Schema({
         type: Number,
         required: true,
         min: 0,
-        default: 0
+        default: 0,
+        index: true
     },
     image_url: String,
     preparation_time: Number,
@@ -49,7 +52,8 @@ const ProductSchema = new Schema({
     status: {
         type: String,
         enum: ['active', 'inactive'],
-        default: 'active'
+        default: 'active',
+        index: true
     }
 }, {
     timestamps: true,
