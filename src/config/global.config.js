@@ -9,5 +9,5 @@ export const ROLES = {
     REGISTERED: 'registered'
 };
 
-// Exporta una lista de roles
-export const ALLOWED_ROLES = Object.values(ROLES);
+// Exporta una lista de roles ==> ['admin', 'colaborator', 'registered']
+export const ALLOWED_ROLES = Object.values(ROLES);  

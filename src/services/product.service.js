@@ -62,7 +62,7 @@ const dbGetAllProducts = async ({ category, type, status, search, page = 1, limi
 
     // Paso 5: Retornar estructura completa
     return {
-        docs: products,     // Los productos de esta pagina
+        products,           // Los productos de esta pagina
         totalDocs,          // Total de productos disponibles (con estos filtros)
         limit: limitNum,    // Limite usado
         page: pageNum,      // Pagina actual
@@ -90,11 +90,20 @@ const dbUpdateProduct = async (id, productData) => {
 }
 
 /**
- * Elimina (soft delete) un producto cambiando su estado a 'inactive'.
+ * Elimina (hard delete) un producto físicamente de la BD.
  * @param {string} id - ID del producto.
  */
-const dbDeleteProduct = async (id) => {
-    return await ProductModel.findByIdAndUpdate(id, { status: 'inactive' }, { new: true });
+const dbHardDeleteProduct = async (id) => {
+    return await ProductModel.findByIdAndDelete(id);
+}
+
+/**
+ * Alterna el estado de un producto (Soft Delete / Reactivación).
+ * @param {string} id - ID del producto.
+ * @param {string} newStatus - Nuevo estado ('active' | 'inactive').
+ */
+const dbToggleProductStatus = async (id, newStatus) => {
+    return await ProductModel.findByIdAndUpdate(id, { status: newStatus }, { new: true });
 }
 
 export {
@@ -102,5 +111,6 @@ export {
     dbGetAllProducts,
     dbGetProductById,
     dbUpdateProduct,
-    dbDeleteProduct
+    dbHardDeleteProduct,
+    dbToggleProductStatus
 };

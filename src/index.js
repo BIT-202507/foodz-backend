@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 
 import dbConnection from './config/mongo.config.js';
 
@@ -20,6 +21,7 @@ dbConnection().then(async () => {
     await seedUnitTypes();
 });
 
+app.use(cors()); // Habilita CORS para todas las rutas
 app.use(express.json()); // Habilita el parseo de JSON en el body de las peticiones
 
 app.get('/health', (req, res) => {

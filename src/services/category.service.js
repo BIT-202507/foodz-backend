@@ -11,7 +11,7 @@ const dbGetAllCategories = async ({ parent_id, level, isActive, search } = {}) =
         filter.parent_id = parent_id;
     }
 
-    if (level) {
+    if (level !== undefined && level !== null) {
         filter.level = level;
     }
 

@@ -14,7 +14,8 @@ const ProductSchema = new Schema({
     category: {
         type: Schema.Types.ObjectId,
         ref: 'Category',
-        index: true
+        index: true,
+        required: true
     },
     // Tipo de producto: plato completo, ingrediente individual o complemento
     type: {
@@ -45,6 +46,12 @@ const ProductSchema = new Schema({
         min: 0,
         default: 0,
         index: true
+    },
+    stock: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
     },
     image_url: String,
     preparation_time: Number,

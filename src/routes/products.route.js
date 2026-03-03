@@ -5,6 +5,7 @@ import {
     getProductById,
     updateProduct,
     deleteProduct,
+    toggleProductStatus,
     getProductNutrition,
     updateProductNutrition,
     addProductIngredient,
@@ -41,11 +42,16 @@ router.patch(
     [authenticationUser, authorizationUser([ROLES.ADMIN, ROLES.COLABORATOR])],
     updateProduct
 ); // Or patch
+router.patch(
+    '/:id/status',
+    [authenticationUser, authorizationUser([ROLES.ADMIN, ROLES.COLABORATOR])],
+    toggleProductStatus
+);
 router.delete(
     '/:id',
-    [authenticationUser, authorizationUser([ROLES.ADMIN])], // Solo admin puede borrar
+    [authenticationUser, authorizationUser([ROLES.ADMIN])], // Hard delete (solo admin)
     deleteProduct
-); // Soft delete
+);
 
 // ==========================================
 // Nutrition Routes (Sub-resource)

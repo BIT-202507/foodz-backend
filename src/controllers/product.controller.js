@@ -3,8 +3,52 @@ import {
     dbGetAllProducts,
     dbGetProductById,
     dbUpdateProduct,
-    dbDeleteProduct
+    dbHardDeleteProduct,
+    dbToggleProductStatus
 } from "../services/product.service.js";
+
+// ... (existing imports)
+
+/**
+ * Elimina definitivamente un producto (Hard Delete).
+ */
+const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedProduct = await dbHardDeleteProduct(id);
+        if (!deletedProduct) {
+            return res.status(404).json({ msg: 'Product not found' });
+        }
+        res.json({ msg: 'Product permanently deleted', deletedProduct });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ msg: 'Error deleting product' });
+    }
+}
+
+/**
+ * Alterna el estado del producto (Active/Inactive).
+ */
+const toggleProductStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body; // Se espera { status: 'active' | 'inactive' }
+
+        if (!status || !['active', 'inactive'].includes(status)) {
+            return res.status(400).json({ msg: 'Invalid status provided' });
+        }
+
+        const updatedProduct = await dbToggleProductStatus(id, status);
+
+        if (!updatedProduct) {
+            return res.status(404).json({ msg: 'Product not found' });
+        }
+        res.json({ msg: `Product status updated to ${status}`, updatedProduct });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ msg: 'Error updating product status' });
+    }
+}
 
 import {
     dbGetNutritionByProductId,
@@ -83,23 +127,6 @@ const updateProduct = async (req, res) => {
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ msg: 'Error updating product' });
-    }
-}
-
-/**
- * Desactiva un producto (Soft Delete).
- */
-const deleteProduct = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const deletedProduct = await dbDeleteProduct(id);
-        if (!deletedProduct) {
-            return res.status(404).json({ msg: 'Product not found' });
-        }
-        res.json({ msg: 'Product deactivated', deletedProduct });
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ msg: 'Error deleting product' });
     }
 }
 
@@ -192,6 +219,7 @@ export {
     getProductById,
     updateProduct,
     deleteProduct,
+    toggleProductStatus,
     getProductNutrition,
     updateProductNutrition,
     addProductIngredient,
